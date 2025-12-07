@@ -130,7 +130,7 @@ if uploaded_file and api_key:
                 
                 total_ops = valid_rows_count * variations
                 update_log(f"📄 Excel読み込み完了: 有効データ{valid_rows_count}行 (x{variations}パターン = 計{total_ops}回生成)")
-                update_log(f"今回の保存先: {unique_output_dir}")
+                update_log("ℹ️ 生成完了後にZIPファイルとしてまとめてダウンロードできます。")
                 st.rerun()
             except Exception as e:
                 st.error(f"初期化エラー: {e}")
@@ -182,7 +182,7 @@ if uploaded_file and api_key:
             st.session_state.processing = False
             progress_container.progress(1.0)
             status_container.text("完了")
-            update_log("🎉 すべて完了しました！")
+            update_log("🎉 すべて完了しました！下のボタンからZIPファイルをダウンロードしてください。")
             st.balloons()
             st.rerun()
 
