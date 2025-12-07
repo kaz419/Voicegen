@@ -21,30 +21,16 @@ with st.sidebar:
     
     api_key = st.text_input("Gemini API Key", type="password", help="AIzaSy...で始まるキーを入力してください")
     
-    # Directory Picker (Simplified)
-    st.subheader("保存先")
-    
-    # Always use Desktop/voice_output_zephyr
-    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop", "voice_output_zephyr")
+    # Output Directory (Hidden from UI)
+    # Always use Desktop/voice_output_zephyr (or home dir on Cloud)
+    output_dir = os.path.join(os.path.expanduser("~"), "Desktop", "voice_output_zephyr")
     
     # Create directory if it doesn't exist
-    if not os.path.exists(desktop_path):
+    if not os.path.exists(output_dir):
         try:
-            os.makedirs(desktop_path, exist_ok=True)
+            os.makedirs(output_dir, exist_ok=True)
         except:
             pass
-
-    st.session_state.current_path = desktop_path
-    st.info(f"ファイルはデスクトップの `{desktop_path}` に保存されます。")
-    
-    if st.button("📂 保存先フォルダを開く"):
-        import subprocess
-        try:
-            subprocess.run(["open", desktop_path])
-        except Exception as e:
-            st.error(f"フォルダを開けませんでした: {e}")
-
-    output_dir = desktop_path
 
     variations = st.slider("生成数 (バリエーション)", min_value=1, max_value=10, value=1)
     st.info(f"推定コスト: 無料 (Previewモデル)")
