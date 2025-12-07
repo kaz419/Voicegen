@@ -241,3 +241,37 @@ elif not uploaded_file:
     st.warning("Excelファイルをアップロードしてください。")
 elif not api_key:
     st.warning("APIキーを入力してください。")
+
+# Download & Open Folder Section (Always show if output dir exists)
+if "unique_output_dir" in st.session_state and st.session_state.unique_output_dir and os.path.exists(st.session_state.unique_output_dir):
+    st.divider()
+    st.subheader("出力ファイル")
+    
+    # ZIP Download
+    import shutil
+    
+    # Create ZIP file (cached to avoid re-zipping on every rerun unless needed)
+    zip_path = f"{st.session_state.unique_output_dir}.zip"
+    if not os.path.exists(zip_path) or st.session_state.processing == False:
+        # Only re-zip if processing is done or zip doesn't exist
+        shutil.make_archive(st.session_state.unique_output_dir, 'zip', st.session_state.unique_output_dir)
+    
+    with open(zip_path, "rb") as f:
+        st.download_button(
+            label="📦 生成ファイルをZIPでダウンロード",
+            data=f,
+            file_name=f"voice_output_{os.path.basename(st.session_state.unique_output_dir)}.zip",
+            mime="application/zip"
+        )
+
+    # Open Folder (Local Mac only)
+    import sys
+    if sys.platform == "darwin":
+        if st.button("📂 生成されたフォルダを開く (Mac only)", key="open_result"):
+            import subprocess
+            try:
+                subprocess.run(["open", st.session_state.unique_output_dir])
+            except Exception as e:
+                st.error(f"フォルダを開けませんでした: {e}")
+    else:
+        st.info("クラウド環境ではフォルダを直接開くことはできません。上のZIPダウンロードをご利用ください。")
